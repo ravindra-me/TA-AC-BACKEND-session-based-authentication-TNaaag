@@ -15,7 +15,7 @@ router.get('/new' , (req,res, next)=>{
 
 
 router.get('/login' ,(req, res, next)=>{
-  var error = req.flash('error')
+  var error = req.flash('error')[0]
   res.render('login', {error});
 })
 
@@ -24,9 +24,11 @@ router.post('/' ,(req,res,next)=>{
     if(err){
       if(err.name === 'MongoError'){
         req.flash('error', 'This email already exist')
+        return res.redirect('/users/new');
       }
       if(err.name === 'ValidationError'){
         req.flash('error', err.message)
+        return res.redirect('/users/new');
       }
       return res.redirect('/users/new');
     }
