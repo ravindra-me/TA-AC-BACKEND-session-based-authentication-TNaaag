@@ -1,4 +1,5 @@
 var express = require('express');
+const { route } = require('.');
 var router = express.Router();
 var Users= require('../models/Users');
 
@@ -19,13 +20,14 @@ router.get('/login' ,(req, res, next)=>{
 })
 
 router.post('/', (req, res, next)=>{
-  if(req.password.length < 4) {
-    req.flash('error' , 'please enter more then 4 charenter')
-    res.redirect('/users/new');
-  }
+  // console.log(req.password)
+  // if(req.password.length < 4) {
+  //   req.flash('error' , 'please enter more then 4 charenter')
+  //   res.redirect('/users/new');
+  // }
   Users.create(req.body, (err, content)=>{
     if(err) return next(err)
-    res.redirect('login')
+    res.redirect('/users/login')
   })
 })
 
@@ -57,5 +59,10 @@ router.post('/login', (req, res, next)=>{
 })
 
 
+router.get('/logout' , (req, res, next)=>{
+  req.session.destroy();
+  res.clearCookie();
+  res.redirect('/users/login')
+})
 
 module.exports = router;

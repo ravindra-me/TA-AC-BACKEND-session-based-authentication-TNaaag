@@ -25,7 +25,7 @@ user.pre('save' , function(next){
     }
 })
 
-user.method.verifyPassword = function (password , cb) {
+user.methods.verifyPassword = function (password , cb) {
     bcrypt.compare(password, this.password, (err, result)=>{
         return cb(err, result)
     })
