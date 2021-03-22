@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-var Users = require('../models/Users');
+var Users = require("../models/Users");
 /* GET users listing. */
 
 router.get("/login", (req, res, next) => {
@@ -13,7 +13,7 @@ router.post("/login", function (req, res, next) {
     req.flash("error", "Email/password required");
     return res.redirect("/users/login");
   }
-  Users.findOne({ email, isAdmin: false }, (err, user) => {
+  Users.findOne({ email }, (err, user) => {
     if (err) return next(err);
     if (!user) {
       req.flash("error", "User doesnt exist!! Please signup");
@@ -26,9 +26,25 @@ router.post("/login", function (req, res, next) {
         return res.redirect("/users/login");
       }
       req.session.userId = user.id;
-      res.redirect("/");
+      req.session.user = user;
+      if (user.isAdmin) {
+        res.redirect("/admin/" + user._id + "/dasboardAdmin");
+      } else {
+        res.redirect("/");
+      }
     });
   });
 });
+
+
+
+
+
+router.get("/logout", (req, res, next) => {
+  req.session.destroy();
+  res.clearCookie();
+  res.redirect("/");
+});
+
 
 module.exports = router;

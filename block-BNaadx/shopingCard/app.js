@@ -7,6 +7,8 @@ var sassMiddleware = require('node-sass-middleware');
 
 var mongoose = require('mongoose')
 var Users = require('./models/Users');
+var Items = require('./models/Items');
+var Card = require('./models/Card');
 
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
@@ -17,6 +19,7 @@ require('dotenv').config();
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var adminRouter = require('./routes/admin');
+var itemsRouter = require('./routes/item');
 
 
 mongoose.connect(
@@ -59,6 +62,7 @@ app.use(flash());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/admin' , adminRouter);
+app.use('/items' , itemsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

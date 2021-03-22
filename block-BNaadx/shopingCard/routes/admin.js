@@ -1,10 +1,13 @@
 var express = require("express");
 var router = express.Router();
 var Users = require("../models/Users");
-var Card = require("../models/card");
+var Card = require("../models/Card");
+const { get } = require("./users");
+const { render } = require("../app");
+const Items = require("../models/Items");
 
 /* GET home page. */
-router.get("/", function (req, res, next) {
+router.get("/signup", function (req, res, next) {
   res.render("signup", { error: req.flash("error") });
 });
 
@@ -17,67 +20,64 @@ router.post("/signup", (req, res, next) => {
   if (req.body.isAdmin === "on") {
     console.log("hello admin");
     user.isAdmin = true;
-    Users.create(user, (err, content) => {
-      if (err) {
-        if (err.name === "MongoError") {
-          req.flash("error", "This email is already used");
-          return res.redirect("/admin");
-        }
-        if (err.name === "ValidationError") {
-          req.flash("error", err.message);
-          return res.redirect("/admin");
-        }
-      }
-      res.redirect("/admin/login");
-    });
   } else {
     user.isAdmin = false;
-    Users.create(user, (err, content) => {
-      Card.create({ userId: content._id }, (err, card) => {
-        if (err) {
-          if (err.name === "MongoError") {
-            req.flash("error", "This email is already used");
-            return res.redirect("/admin");
-          }
-          if (err.name === "ValidationError") {
-            req.flash("error", err.message);
-            return res.redirect("/admin");
-          }
-        }
-        res.redirect("/users/login");
-      });
-    });
   }
-});
-
-router.post("/login", (req, res, next) => {
-  var { email, password } = req.body;
-  if (!email || !password) {
-    req.flash("error", "Email/password required");
-    return res.redirect("/admin/login");
-  }
-  Users.findOne({ email, isAdmin: true }, (err, admin) => {
-    if (err) return next(err);
-    if (!admin) {
-      req.flash("error", "User doesnt exist!! Please signup");
-      return res.redirect("/admin/login");
-    }
-    admin.verifyPassword(password, (err, result) => {
-      if (err) return next(err);
-      if (!result) {
-        req.flash("error", "password is incorrect");
-        return res.redirect("/admin/login");
+  Users.create(user, (err, content) => {
+    if (err) {
+      if (err.name === "MongoError") {
+        req.flash("error", "This email is already used");
+        return res.redirect("/admin");
       }
-      req.session.userId = admin.id;
-      res.redirect("/");
-    });
+      if (err.name === "ValidationError") {
+        req.flash("error", err.message);
+        return res.redirect("/admin");
+      }
+    }
+    res.redirect("/users/login");
   });
 });
 
-router.get("/logout", (req, res, next) => {
-  req.session.destroy();
-  res.clearCookie();
-  res.redirect("/admin/login");
+router.get("/:id/dasboardAdmin", (req, res, next) => {
+  var id = req.params.id;
+  Users.findById({_id : id, isAdmin: true })
+    .populate("itemId")
+    .exec((err, content) => {
+      if(err) return next(err);
+      res.render('dasboardAdmin' , {data:content});
+    });
 });
+
+router.get("/addItem", (req, res, next) => {
+  var id = req.session.userId;
+  Users.findById(id, (err, content) => {
+    console.log(content);
+    if (content.isAdmin) {
+      res.render("addItem", { id });
+    } else {
+      console.log("users");
+    }
+  });
+});
+
+router.post("/:id/addItem", (req, res, next) => {
+  req.body.adminId = req.params.id;
+  Items.create(req.body, (err, content) => {
+    if (err) return next(err);
+    console.log(content)
+    Users.findByIdAndUpdate(
+      req.params.id,
+      { $push: { itemId: content._id } },
+      {new:true},
+      (err, updateuser) => {
+        if (err) return next(err);
+        res.redirect("/admin/" + updateuser._id +  "/dasboardAdmin");
+      }
+    );
+  });
+});
+
+
+
 
 module.exports = router;
