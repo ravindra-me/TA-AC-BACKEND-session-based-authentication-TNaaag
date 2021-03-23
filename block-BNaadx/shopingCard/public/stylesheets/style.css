@@ -110,6 +110,12 @@ body {
           flex: 0 1 30%;
 }
 
+.flex-31 {
+  -webkit-box-flex: 0;
+      -ms-flex: 0 1 31%;
+          flex: 0 1 31%;
+}
+
 .flex-50 {
   -webkit-box-flex: 0;
       -ms-flex: 0 1 50%;
@@ -146,7 +152,11 @@ body {
 }
 
 .gap {
-  gap: 10%;
+  gap: 5%;
+}
+
+.grid-gap {
+  gap: 1rem;
 }
 
 .img {
@@ -309,6 +319,10 @@ footer .copy-right small {
   padding: 1rem;
   -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
           box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+}
+
+.details-hero .container div {
+  margin-bottom: 1rem;
 }
 
 .hero-signup .checkbox-box {

@@ -18,13 +18,15 @@
             <nav>
                 <ul class="flex align-center">
                     <li><a href="/home">Home</a></li>
-                   <li><a href="/users/logout">logout</a></li>
+                    <li><a href="/items">List Of Items</a></li>
+                    <li><a href="/users/login">LogIn</a></li>
+                   <li><a href="/users/logout">LogOut</a></li>
                 </ul>
             </nav>
         </div>
     </header>
     <main>
-        <section>
+        <section class="padding details-hero">
             <div class="container">
                 <h2 class="ternary-heading">
                     <%= data.name %>
@@ -45,8 +47,8 @@
                     <h3 class="ternary-heading">admin name</h3>
                     <p><%= data.adminId.name%></p>
                 </div>
-                <a href="/items/<%=data._id%>/edit">edit</a>
-                <a href="/items/<%= data._id %>/delete">delete</a>
+                <a class="btn" href="/items/<%=data._id%>/edit">edit</a>
+                <a class="btn" href="/items/<%= data._id %>/delete">delete</a>
             </div>
         </section>
     </main> 

@@ -2,7 +2,7 @@ var express = require("express");
 const { render } = require("../app");
 var router = express.Router();
 var Items = require("../models/Items");
-var Card = require("../models/Card");
+var Cart = require("../models/Cart");
 
 router.get("/", (req, res, next) => {
   var session = req.session.userId;
@@ -91,42 +91,43 @@ router.get("/:id/delete", (req, res, next) => {
 
 router.get("/:id/cart", (req, res, next) => {
   var sessionId = req.session.userId;
-  Card.findOne({ userId: sessionId }, (err, content) => {
+  Cart.findOne({ userId: sessionId }, (err, content) => {
       console.log(content)
     if(err) return next(err);
     if (content === null) {
       req.body.userId = req.session.userId;
-      Card.create(req.body, (err, createContent) => {
+      req.body.listItems =  [req.params.id];
+      Cart.create(req.body,(err, createContent) => {
         if (err) return next(err);
-       createContent.listItems =  createContent.listItems.push(req.params.id);
         console.log(createContent , "undefine")
         res.redirect('/items');
       });
     } else {
       if (content.listItems.includes(req.params.id)) {
-          console.log("alredy includes")
+        console.log("alredy includes")
         res.redirect('/items');
       } else {
-        content.listItems.push(req.params.id);
-        console.log(content , "alredy user")
-        res.redirect('/items');
+        Cart.findOneAndUpdate({userId: sessionId}, {$push:{listItems: req.params.id}}, {new:true}, (err, content)=> {
+          if(err) next(err);
+          res.redirect('/items');
+        })
       }
     }
   });
 });
 
 router.get("/carts", (req, res,next) => {
-    console.log(req.session.userId)
-    Card.findOne({userId: req.session.userId} , (err ,content)=> {
-        console.log(content)
-    })
-//   Card.findOne({ userId: req.session.userId })
-//     .populate("listItems")
-//     .exec((err, items) => {
-//         console.log(items);
-//       if (err) return next(err);
-//       res.render("listcarts", { data: items.listItems });
-//     });
+  Cart.findOne({ userId: req.session.userId })
+    .populate("listItems")
+    .exec((err, items) => {
+        console.log(items);
+      if (err) return next(err);
+      if(items){
+       return res.render("listcarts", { data: items.listItems });
+      }else{
+        return res.redirect('/items');
+      }
+    });
 });
 
 module.exports = router;

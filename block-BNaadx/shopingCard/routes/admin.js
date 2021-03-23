@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var Users = require("../models/Users");
-var Card = require("../models/Card");
+var Card = require("../models/Cart");
 const { get } = require("./users");
 const { render } = require("../app");
 const Items = require("../models/Items");
@@ -11,9 +11,9 @@ router.get("/signup", function (req, res, next) {
   res.render("signup", { error: req.flash("error") });
 });
 
-router.get("/login", (req, res, next) => {
-  res.render("adminLogin", { error: req.flash("error") });
-});
+// router.get("/login", (req, res, next) => {
+//   res.render("adminLogin", { error: req.flash("error") });
+// });
 
 router.post("/signup", (req, res, next) => {
   const user = { ...req.body };
@@ -55,7 +55,7 @@ router.get("/addItem", (req, res, next) => {
     if (content.isAdmin) {
       res.render("addItem", { id });
     } else {
-      console.log("users");
+      res.redirect('/users/login')
     }
   });
 });
