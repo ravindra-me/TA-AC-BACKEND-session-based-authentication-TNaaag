@@ -14,11 +14,11 @@
 <body>
     <header>
         <div class="container flex justify-between-flex align-center">
-            <a href="/" class="logo">Shooping Card</a>
+            <a href="/" class="logo">Shooping Cart</a>
             <nav>
                 <ul class="flex align-center">
                     <li><a href="/items">Items List</a></li>
-                    <li><a href="/items/add">add item</a></li>
+                    <li><a href="/admin/addItem">add item</a></li>
                     <li><a href="/users/logout">logout</a></li>
                 </ul>
             </nav>
@@ -28,7 +28,7 @@
         <section class="das-hero padding">
             <div class="container">
                 <h1 class="primary-heading text-center">Your added items List</h1>
-                <div class="grid grid-template-col-4">
+                <div class="grid grid-template-col-4 gap">
                     <% data.itemId.forEach(element => { %>
                         <article class="card">
                           <h3 class="ternary-heading"><%= element.name %></h3>

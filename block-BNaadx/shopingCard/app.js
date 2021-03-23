@@ -8,7 +8,7 @@ var sassMiddleware = require('node-sass-middleware');
 var mongoose = require('mongoose')
 var Users = require('./models/Users');
 var Items = require('./models/Items');
-var Card = require('./models/Card');
+var Cart = require('./models/Cart');
 
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);

@@ -17,6 +17,7 @@
                     <li><a href="/users/login">login</a></li>
                     <li><a href="/admin/signup">signup</a></li>
                    <li><a href="/users/logout">logout</a></li>
+                   <li><a href="/items">list of items</a></li>
                    <li><a href="/items/carts">cart</a></li>
                 </ul>
             </nav>
@@ -24,8 +25,8 @@
     </header>
     <main>
         <section class="padding">
-            <h2 class="secondary-heading text-center">List Of Items</h2>
-            <div class="container grid grid-template-col-4 padding">
+            <h2 class="secondary-heading text-center">List Of Items in Cart</h2>
+            <div class="container grid grid-template-col-4 padding gap">
               <% data.forEach(element => { %>
               <article class="card">
                 <h3 class="ternary-heading"><%= element.name %></h3>
